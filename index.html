@@ -2,306 +2,523 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Menì¹¹ – Nome del Pub</title>
+  <title>Menù – New Swing Pub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600;6..96,700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <style>
     :root {
-      --bg: #0f0f0f;
-      --card: #1a1a1a;
-      --text: #f5f5f5;
-      --muted: #b0b0b0;
-      --accent: #ffb700;
-      --border: #333;
+      --black: #000000;
+      --gold: #D9BC80;
+      --gold-soft: rgba(217, 188, 128, 0.72);
+      --gold-line: rgba(217, 188, 128, 0.58);
+      --white: #F6F1E7;
+      --header-h: 68px;
     }
 
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      padding: var(--header-h) 0 0;
+      background: var(--black);
+      color: var(--white);
+      font-family: "Raleway", Arial, sans-serif;
       line-height: 1.5;
     }
 
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 1.25rem 1rem 3rem;
-    }
-
     header {
-      text-align: center;
-      margin-bottom: 1.5rem;
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-h);
+      padding: 0 1rem;
+      background: rgba(0, 0, 0, 0.96);
+      border-bottom: 1px solid var(--gold-line);
+      animation: header-enter 0.45s ease both;
     }
 
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      color: var(--accent);
-      margin: 0 0 0.25rem 0;
+    .brand { display: flex; align-items: center; gap: 0.65rem; min-width: 0; }
+    .brand-mark { display: grid; width: 35px; height: 35px; flex: 0 0 35px; place-items: center; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); font-size: 1rem; }
+    .logo { margin: 0; color: var(--gold); font-family: "Bodoni Moda", "Bodoni MT", Didot, serif; font-size: 1.18rem; font-weight: 600; letter-spacing: 0.10em; line-height: 1; white-space: nowrap; }
+    .tagline { margin: 0.1rem 0 0; color: var(--gold-soft); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.08em; white-space: nowrap; }
+
+    .nav-control { display: flex; align-items: center; justify-content: flex-end; gap: 0.25rem; }
+    .menu-hint { display: flex; align-items: center; gap: 0.25rem; max-width: 175px; color: var(--gold); font-size: 0.57rem; font-weight: 600; line-height: 1.15; letter-spacing: 0.015em; text-align: right; animation: hint-enter 0.6s 0.8s ease both, hint-exit 0.55s 7.3s ease forwards; }
+    .hint-arrow { display: inline-block; flex: 0 0 auto; color: var(--gold); font-size: 1.25rem; line-height: 1; transform-origin: 55% 60%; animation: arrow-turn 1.6s 1.3s ease-in-out 3; }
+
+    .hamburger { display: flex; width: 42px; height: 42px; padding: 0; align-items: center; justify-content: center; flex-direction: column; gap: 5px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--gold); cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease; -webkit-tap-highlight-color: transparent; }
+    .hamburger:hover, .hamburger:focus-visible { border-color: var(--gold-line); background: rgba(217, 188, 128, 0.08); outline: none; }
+    .hamburger:active { transform: scale(0.92); }
+    .hamburger span { display: block; width: 23px; height: 2px; border-radius: 2px; background: currentColor; transition: transform 0.25s ease, opacity 0.2s ease; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-menu { position: fixed; top: var(--header-h); right: 0; z-index: 999; min-width: 220px; padding: 0.55rem 0; background: #000; border-bottom: 1px solid var(--gold-line); border-left: 1px solid var(--gold-line); border-bottom-left-radius: 10px; box-shadow: 0 16px 28px rgba(0, 0, 0, 0.72); opacity: 0; pointer-events: none; transform: translateX(105%); transition: transform 0.25s ease, opacity 0.25s ease; }
+    .nav-menu.open { opacity: 1; pointer-events: auto; transform: translateX(0); }
+    .nav-menu a { display: block; padding: 0.7rem 1rem; border-left: 3px solid transparent; color: var(--gold); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; transition: background 0.18s ease, border-color 0.18s ease, padding-left 0.18s ease; }
+    .nav-menu a:hover, .nav-menu a:focus-visible { padding-left: 1.2rem; border-left-color: var(--gold); background: rgba(217, 188, 128, 0.09); outline: none; }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 1.8rem 1rem 3rem; }
+    .hero { padding: 1rem 0 1.25rem; text-align: center; animation: fade-up 0.55s 0.1s ease both; }
+    .hero-emblem { display: grid; width: 60px; height: 60px; margin: 0 auto 0.9rem; place-items: center; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); font-size: 1.7rem; }
+    .hero-title { margin: 0; color: var(--gold); font-family: "Bodoni Moda", "Bodoni MT", Didot, serif; font-size: clamp(2.1rem, 10vw, 3rem); font-weight: 600; letter-spacing: 0.08em; line-height: 0.95; }
+    .gold-rule { width: 70px; height: 1px; margin: 0.85rem auto; background: var(--gold); }
+    .hero-subtitle, .hero-info { margin: 0; color: var(--gold-soft); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em; }
+    .hero-info { margin-top: 0.35rem; font-size: 0.73rem; }
+
+    section { margin: 2.1rem 0; padding: 0; scroll-margin-top: calc(var(--header-h) + 14px); opacity: 0; transform: translateY(16px); transition: opacity 0.45s ease, transform 0.45s ease; }
+    section.visible { opacity: 1; transform: translateY(0); }
+    section.focused .section-rule { transform: scaleX(1.04); box-shadow: 0 0 16px rgba(217, 188, 128, 0.34); }
+
+    h2 { margin: 0; color: var(--gold); font-family: "Bodoni Moda", "Bodoni MT", Didot, serif; font-size: clamp(1.95rem, 8vw, 2.45rem); font-weight: 600; letter-spacing: 0.035em; line-height: 1; }
+    .section-rule { width: 100%; height: 5px; margin: 0.75rem 0 0.95rem; border-radius: 1px; background: var(--gold); transform-origin: left center; transition: transform 0.35s ease, box-shadow 0.35s ease; }
+    h3 { margin: 1.7rem 0 0; color: var(--gold); font-family: "Bodoni Moda", "Bodoni MT", Didot, serif; font-size: 1.5rem; font-weight: 600; letter-spacing: 0.03em; line-height: 1; }
+    .subsection-rule { width: 100%; height: 2px; margin: 0.55rem 0 0.7rem; background: var(--gold); opacity: 0.9; }
+
+    /* Nome, puntini e prezzo sulla prima riga; descrizione bianca nella riga sotto. */
+    .item { padding: 0.53rem 0; }
+    .item-top { display: flex; align-items: baseline; min-width: 0; }
+    .item-name { flex: 0 0 auto; color: var(--gold); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.01em; line-height: 1.3; }
+    .dots { flex: 1 1 auto; min-width: 12px; margin: 0 0.42rem 0.25rem 0.50rem; border-bottom: 1px dotted rgba(217, 188, 128, 0.72); }
+    .price { flex: 0 0 auto; color: var(--gold); font-size: 0.88rem; font-weight: 700; line-height: 1.3; white-space: nowrap; }
+    .item-desc { margin-top: 0.13rem; color: var(--white); font-size: 0.73rem; font-weight: 400; line-height: 1.35; }
+    .badge { display: inline-block; margin-left: 0.35rem; color: var(--gold-soft); font-size: 0.67rem; font-weight: 600; letter-spacing: 0.02em; vertical-align: middle; }
+    .note { margin: 0.8rem 0 0; color: var(--white); font-size: 0.74rem; line-height: 1.45; }
+    footer { margin-top: 2.4rem; padding-top: 1.2rem; border-top: 1px solid var(--gold-line); color: var(--gold-soft); font-size: 0.7rem; text-align: center; }
+
+    @keyframes header-enter { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hint-enter { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes hint-exit { to { opacity: 0; transform: translateX(8px); visibility: hidden; } }
+    @keyframes arrow-turn { 0%, 100% { transform: rotate(0deg) scale(1); } 35% { transform: rotate(18deg) scale(1.13); } 65% { transform: rotate(-12deg) scale(1.05); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
 
-    .subtitle {
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin: 0;
-    }
-
-    .info {
-      text-align: center;
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 0.4rem;
-    }
-
-    section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem 1.1rem;
-      margin: 1.25rem 0;
-    }
-
-    h2 {
-      margin: 0 0 0.7rem 0;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--accent);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.35rem;
-    }
-
-    .item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.5rem 1rem;
-      padding: 0.35rem 0;
-      align-items: baseline;
-    }
-
-    .item-name {
-      font-size: 0.98rem;
-    }
-
-    .item-desc {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: -0.15rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .price {
-      font-weight: 700;
-      color: var(--text);
-      white-space: nowrap;
-    }
-
-    .note {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-top: 0.5rem;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-top: 2rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.7rem;
-      padding: 0.15rem 0.45rem;
-      border-radius: 999px;
-      background: #2a2a2a;
-      color: var(--muted);
-      margin-left: 0.4rem;
-      vertical-align: middle;
-    }
-
+    @media (max-width: 520px) { .menu-hint { max-width: 112px; font-size: 0.5rem; } .hint-arrow { font-size: 1.05rem; } }
+    @media (max-width: 390px) { .menu-hint { display: none; } }
     @media (max-width: 480px) {
-      .logo { font-size: 1.5rem; }
-      h2 { font-size: 1.15rem; }
-      .item { grid-template-columns: 1fr auto; }
+      .brand-mark { width: 33px; height: 33px; flex-basis: 33px; }
+      .logo { font-size: 1rem; }
+      .tagline { font-size: 0.56rem; }
+      h2 { font-size: 1.85rem; }
+      h3 { font-size: 1.38rem; }
+      .item-name, .price { font-size: 0.84rem; }
+      .dots { margin-left: 0.43rem; margin-right: 0.35rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1 class="logo">Nome del Pub</h1>
-      <p class="subtitle">Birre artigianali • Panini • Cocktail</p>
-      <p class="info">Via Esempio 123, Palermo &bull; Aperto tutti i giorni 18:00–02:00</p>
-    </header>
-
-    <section>
-      <h2>Birre alla spina</h2>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Bionda <span class="badge">0,4 l</span></div>
-          <div class="item-desc">Lager chiara, fresca e beverina.</div>
-        </div>
-        <div class="price">€ 5,00</div>
+  <header>
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">🍸</div>
+      <div>
+        <h1 class="logo">NEW SWING PUB</h1>
+        <p class="tagline">DRINK • FOOD • GOOD VIBES</p>
       </div>
+    </div>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Rossa <span class="badge">0,4 l</span></div>
-          <div class="item-desc">Ambrata, leggermente maltata.</div>
-        </div>
-        <div class="price">€ 5,50</div>
+    <div class="nav-control">
+      <div class="menu-hint" aria-hidden="true">
+        <span>Usa il menù a tendina<br />per navigare più velocemente</span>
+        <span class="hint-arrow">↪</span>
       </div>
+      <button class="hamburger" id="hamburger" aria-label="Apri menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-      <div class="item">
-        <div>
-          <div class="item-name">IPA <span class="badge">0,4 l</span></div>
-          <div class="item-desc">India Pale Ale, aromatica e amara.</div>
-        </div>
-        <div class="price">€ 6,00</div>
-      </div>
+  <!-- Ogni link deve avere una section con lo stesso id: #birre -> id="birre". -->
+  <nav class="nav-menu" id="navMenu" aria-label="Categorie del menù">
+    <a href="#birre">Birre</a>
+    <a href="#cocktail">Cocktail</a>
+    <a href="#distillati">Distillati & liquori</a>
+    <a href="#soft">Soft & Acqua</a>
+    <a href="#antipasti">Antipasti</a>
+    <a href="#panini">Panini</a>
+    <a href="#piadine">Piadine</a>
+    <a href="#bruschettoni">Bruschettoni</a>
+    <a href="#taglieri">Taglieri</a>
+    <a href="#insalate">Insalate</a>
+    <a href="#dolci">Dolci</a>
+  </nav>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Stout <span class="badge">0,4 l</span></div>
-          <div class="item-desc">Scura, corposa, note di caffÃ¨.</div>
-        </div>
-        <div class="price">€ 6,00</div>
-      </div>
+  <main class="container">
+    <div class="hero">
+      <div class="hero-emblem" aria-hidden="true">🍸</div>
+      <h2 class="hero-title">NEW SWING PUB</h2>
+      <div class="gold-rule"></div>
+      <p class="hero-subtitle">BIRRE • COCKTAIL • FOOD</p>
+      <p class="hero-info">Corso IV Aprile, Misilmeri, Palermo</p>
+      <p class="hero-info">Aperto 18:00–02:00 • Chiuso il martedì</p>
+    </div>
 
-      <p class="note">Disponibili anche formati da 0,2 l a prezzo ridotto.</p>
-    </section>
-
-    <section>
+    <!-- La section Birre esiste ed è collegata correttamente a href="#birre". -->
+    <section id="birre">
       <h2>Birre in bottiglia</h2>
+      <div class="section-rule"></div>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Weizen <span class="badge">0,5 l</span></div>
-          <div class="item-desc">Birra di frumento, fresca e speziata.</div>
-        </div>
-        <div class="price">€ 6,50</div>
-      </div>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Saison <span class="badge">0,33 l</span></div>
-          <div class="item-desc">Birra rustica, lievemente pepata.</div>
-        </div>
-        <div class="price">€ 6,00</div>
-      </div>
+      <div class="item"><div class="item-top"><div class="item-name">Beck's</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Heineken</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Ceres</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tennent's</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Ceres lager</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Paulaner</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Leffe</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Bionda o rossa</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Corona</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Messina</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc">Classica o melograno</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Chimay</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Rossa o blu</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Birra dello stretto</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc">Non filtrata o lager</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Birra analcolica</div><div class="dots"></div><div class="price">€ 3,00</div></div><div class="item-desc">Heineken 0</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Birra al limone</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc">Peroni</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Faxe</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Ceres 10</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Desperados</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Du demon</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bud</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Ichnusa</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
     </section>
 
-    <section>
-      <h2>Panini</h2>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Panino con arancina</div>
-          <div class="item-desc">Arancina al ragÃ¹, insalata, salsa dello chef.</div>
-        </div>
-        <div class="price">€ 6,50</div>
-      </div>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Panino con panelle</div>
-          <div class="item-desc">Panelle croccanti, ricotta, pomodoro.</div>
-        </div>
-        <div class="price">€ 6,00</div>
-      </div>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Cheeseburger del pub</div>
-          <div class="item-desc">Manzo, cheddar, bacon, cipolla caramellata.</div>
-        </div>
-        <div class="price">€ 8,50</div>
-      </div>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Veggie burger</div>
-          <div class="item-desc">Hamburger vegetale, insalata, pomodoro, salsa yogurt.</div>
-        </div>
-        <div class="price">€ 8,00</div>
-      </div>
-    </section>
-
-    <section>
+    <section id="cocktail">
       <h2>Cocktail & Drink</h2>
+      <div class="section-rule"></div>
+      <h3>Classici</h3>
+      <div class="subsection-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Gin tonic</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Gin, Tonica</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Gin lemon</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Gin, Tonica al limone</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Black russian</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Liquore al caffè</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">White russian</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Liquore al caffè, Panna montata</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Moscow mule</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Succo di limone, Ginger beer</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">London mule</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Gin, Succo di limone, Ginger beer</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Rum e cola</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Rum bianco, Coca-cola</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Mojito</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Succo di lime, Zucchero di canna bianco, Rum bianco, Soda, Ciuffo di menta</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Cubra libre</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Rum bianco, Coca-Cola, Succo di limone</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Pina colada</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Rum bianco, Succo d'ananas, Sciroppo di cocco</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Sex on the beach</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Liquore alla pesca, SUcco d'arancia, Sciroppo di mirtillo</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Angelo azzurro</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Gin, Triple sec, Blue curaccao</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Quattro bianchi</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Gin, Rum bianco, Vodka, Tequila</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Godfather</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Scotch Whiskey, Amaretto disaronno</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Godmother</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Amaretto disaronno</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Screwdriver</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Succo d'arancia</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tequila sunrise</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Tequila, Succo d'arancia, Sciroppo di granatina</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Paloma</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Tequila, Succo di lime, Soda al pompelmo rosa</div></div>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Spritz</div>
-          <div class="item-desc">Aperol / Select / Campari, prosecco, soda.</div>
-        </div>
-        <div class="price">€ 6,00</div>
-      </div>
+      <h3>Martini e Manhattan</h3>
+      <div class="subsection-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Cocktail martini</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Martini dry, Gin</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Manhattan</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Martini rosso, Angostura, Rye Whiskey</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Vodka martini</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Martini dry, Vodka</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Dirty martini</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Martini dry, Vodka, Acquetta di salamoia di olive</div></div>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Gin Tonic</div>
-          <div class="item-desc">Gin premium, tonica premium, lime.</div>
-        </div>
-        <div class="price">€ 7,50</div>
-      </div>
+      <h3>Negroni</h3>
+      <div class="subsection-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Negroni</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vermouth, Campari, Gin, Angostura</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Negroski</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vermouth, Campari, Vodka, Angostura</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Boulevardier</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vermouth, Campari, Bourbon, Angostura</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Negroni Sbagliato</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vermouth, Campari, Prosecco</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Americano</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vermouth, Campari, Soda</div></div>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Moscow Mule</div>
-          <div class="item-desc">Vodka, ginger beer, lime.</div>
-        </div>
-        <div class="price">€ 7,50</div>
-      </div>
+      <h3>Spritz</h3>
+      <div class="subsection-rule"></div>
+        <div class="item"><div class="item-top"><div class="item-name">Aperol spritz</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Aperol, Prosecco</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Campari spritz</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Campari, Prosecco</div></div>
+       <div class="item"><div class="item-top"><div class="item-name">Hugo spritz</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Liquore al fiore di sambuco, Prosecco, Ciuffo di menta, Soda</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Martini royale</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Martini bianco, Prosecco, Soda</div></div>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Negroni</div>
-          <div class="item-desc">Gin, Campari, vermut rosso.</div>
-        </div>
-        <div class="price">€ 7,00</div>
-      </div>
+    <h3>Pestati</h3>
+      <div class="subsection-rule"></div>
+        <div class="item"><div class="item-top"><div class="item-name">Capiroska</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Lime pestato, Zucchero di canna pestato</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Capirinha</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Cachaca, Lime pestato, Zucchero di canna pestato</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Capirissima</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Rum, Lime pestato, Zucchero di canna pestato</div></div>
+     
+    <h3>Classici in coppa</h3>
+      <div class="subsection-rule"></div>
+        <div class="item"><div class="item-top"><div class="item-name">Margarita</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Tequila, Triplesec, Succo di limone</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">White lady</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Gin, Triplesec, Succo di limone</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Kamikaze</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Triplesec, Succo di limone</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Cosmopolitan</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Triplesec, Succo di limone, Sciroppo di mirtillo</div></div>
+
+    <h3>Long Island</h3>
+      <div class="subsection-rule"></div>
+        <div class="item"><div class="item-top"><div class="item-name">Long island</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Rum, Gin, Triplesec, Sweet and sour, Coca cola</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Japanese</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Rum, Gin, Midori, Sweet and sour, Sprite</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Miami ice</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Rum, Gin, Blue curacao, Sweet and sour, Sprite</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Italian ice tea</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Vodka, Rum, Gin, Amaretto disaronno, Sweet and sour, Coca cola</div></div>
+   
     </section>
 
-    <section>
+ <section id="distillati">
+      <h2>Distillati & Liquori</h2>
+      <div class="section-rule"></div>
+      <h3>Amari e altri</h3>
+      <div class="subsection-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Averna</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Jagermeister</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Montenegro</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Unicum</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Fernet branca</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Branca menta</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Petrus</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Lucano</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Jefferson</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Limoncello</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Amaro del capo</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Baileys</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+
+      <h3>Rum</h3>
+      <div class="subsection-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Legendario</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Diplomatico</div><div class="dots"></div><div class="price">€ 7,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Don papa</div><div class="dots"></div><div class="price">€ 7,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Zacapa</div><div class="dots"></div><div class="price">€ 9,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Havana 7</div><div class="dots"></div><div class="price">€ 6,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Havana 3</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Pampero</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc"></div></div>
+
+      <h3>Whisky & Whiskey</h3>
+      <div class="subsection-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Jack Daniel's</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Jack Daniel's honey</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Jack Daniel's apple</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Jack Daniel's fire</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Laphroaig</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Talisker</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Oban</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Oropilla</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Ballantines</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">J&B</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Fireball</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Four roses</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Jim beam</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Johnnie walker red label</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+
+
+      <h3>Gin tonic</h3>
+      <div class="subsection-rule"></div>
+        <div class="item"><div class="item-top"><div class="item-name">Tanqueray (non accompagnato da tonica)</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Aperol, Prosecco</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Tanqueray (accompagnato da tonica)</div><div class="dots"></div><div class="price">€ 7,00</div></div><div class="item-desc">Campari, Prosecco</div></div>
+       <div class="item"><div class="item-top"><div class="item-name">Tanqueray rangpur lime</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Liquore al fiore di sambuco, Prosecco, Ciuffo di menta, Soda</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tanqueray sevilla arancia</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Martini bianco, Prosecco, Soda</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tanqueray malacca</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bombay (non accompagnato da tonica)</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bombay (accompagnato da tonica)</div><div class="dots"></div><div class="price">€ 7,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tanqueray 0 (non accompagnato da tonica)</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tanqueray 0 (accompagnato da tonica)</div><div class="dots"></div><div class="price">€ 7,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Gin mare</div><div class="dots"></div><div class="price">€ 10,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Hendrick's</div><div class="dots"></div><div class="price">€ 10,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Malfy pompelmo</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Malfy arancia</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Roku</div><div class="dots"></div><div class="price">€ 10,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Portofino</div><div class="dots"></div><div class="price">€ 13,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Nordes</div><div class="dots"></div><div class="price">€ 9,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Hendrick's gran cabaret</div><div class="dots"></div><div class="price">€ 12,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bulldog</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Etna</div><div class="dots"></div><div class="price">€ 10,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Engine</div><div class="dots"></div><div class="price">€ 12,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Apenera</div><div class="dots"></div><div class="price">€ 12,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Monkey</div><div class="dots"></div><div class="price">€ 13,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Gin del Professore coccodrille</div><div class="dots"></div><div class="price">€ 11,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Dolcevita dry</div><div class="dots"></div><div class="price">€ 7,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Dolcevita bergamotto</div><div class="dots"></div><div class="price">€ 7,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Xibal</div><div class="dots"></div><div class="price">€ 13,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Ukiyo blossom</div><div class="dots"></div><div class="price">€ 12,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Ukiyo yuzu</div><div class="dots"></div><div class="price">€ 12,00</div></div><div class="item-desc"></div></div>
+
+
+    <section id="soft">
       <h2>Soft & Acqua</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Acqua 0.5L</div><div class="dots"></div><div class="price">€ 1,00</div></div><div class="item-desc">Naturale o frizzante</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Acqua 1L</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc">Naturale o frizzante</div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Coca Cola</div><div class="dots"></div><div class="price">€ 2,00</div></div><div class="item-desc">Normale o zero</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">The san benedetto</div><div class="dots"></div><div class="price">€ 2,00</div></div><div class="item-desc">Pesca o limone</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Fanta</div><div class="dots"></div><div class="price">€ 2,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Sprite</div><div class="dots"></div><div class="price">€ 2,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Chinotto</div><div class="dots"></div><div class="price">€ 2,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Crodino</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Sanbitter</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc">Bianco o rosso</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Redbull</div><div class="dots"></div><div class="price">€ 3,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Schweppes</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc">Tonica o lemon</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Succo di frutta</div><div class="dots"></div><div class="price">€ 2,00</div></div><div class="item-desc">Ace, Pesca, Pera o Ananas</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Ginger beer</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tonica mediterranea</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tonica indian</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Tonica al pompelmo</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+        <div class="item"><div class="item-top"><div class="item-name">Tonica al sambuco</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Caffè</div><div class="dots"></div><div class="price">€ 1,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Campari soda</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc"></div></div>
 
-      <div class="item">
-        <div>
-          <div class="item-name">Acqua naturale / frizzante</div>
-          <div class="item-desc">0,75 l</div>
-        </div>
-        <div class="price">€ 2,50</div>
-      </div>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Coca-Cola / Coca-Cola Zero</div>
-          <div class="item-desc">0,33 l</div>
-        </div>
-        <div class="price">€ 3,00</div>
-      </div>
-
-      <div class="item">
-        <div>
-          <div class="item-name">Birra analcolica</div>
-          <div class="item-desc">0,33 l</div>
-        </div>
-        <div class="price">€ 4,00</div>
-      </div>
     </section>
 
-    <footer>
-      MenÃ¹ digitale â aggiornato a settembre 2026<br />
-      I prezzi si intendono IVA inclusa.
-    </footer>
-  </div>
+     <section id="antipasti">
+      <h2>Antipasti</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Patatine fritte</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Panelle (10pz)</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Arancinette (6pz)</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Alette di pollo (6pz)</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Nuggets (8pz)</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Anelli di cipolla (8pz)</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Antipasto caldo</div><div class="dots"></div><div class="price">€ 3,50 a persona</div></div><div class="item-desc">Patatine fritte, Panelle, Crocchè, Nuggets di pollo, Mozzarelline, Anelli di cipolla</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tris di pizzette fritte</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc"><ul><li>1 con pomodoro, mozzarella e basilico;</li><li>1 con mortadella e pesto di pistacchio; </li><li> 1 con philadelphia, speck e noci;</li></ul></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Fagottino</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Tritato di vitello aromatizzato alla philadelphia, Mozzarella fiordilatte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Frittura di pesce</div><div class="dots"></div><div class="price">€ 15,00</div></div><div class="item-desc">Calamari, Gamberoni, Latterini, Frittelle di alghe (secondo disponibilità del giorno)</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bruschette italiane (5pz)</div><div class="dots"></div><div class="price">€ 4,50</div></div><div class="item-desc">Pomodoro e basilico</div></div>
+
+    </section>
+
+    <section id="panini">
+      <h2>Panini</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Cartoccio</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc">Prosciutto cotto, Mozzarella fiordilatte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Topolino</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc">Prosciutto cotto, Mozzarella fiordilatte, Wrustel</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Bresaola</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Bresaola, Rucola, Scaglie di grana</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Hamburger basic</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Hamburger di manzo, Lattuga, Pomodoro</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Pollo</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Petto di pollo panato (fritto o alla piastra), Lattuga, Pomodoro</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Caprese</div><div class="dots"></div><div class="price">€ 3,50</div></div><div class="item-desc">Mozzarella fiordilatte, Pomodoro, Basilico, Olio, Sale, Pepe</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">America</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Hamburger di Manzo, Lattuga, Pomodoro, Cheddar, Bacon croccante, Cipolla caramellata, Contorno di patatine fritte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">America con pollo fritto</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Petto di pollo panato fritto, Lattuga, Pomodoro, Cheddar, Bacon croccante, Cipolla caramellata, Contorno di patatine fritte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Pistacchio</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Mortadella, Stracciatella, Granella di pistacchio</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Porchetta</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Porchetta, Olio, Succo di limone, Cipolla caramellata</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Crudo</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Prosciutto crudo, Rucola, Pomodoro, Scaglie di grana</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Diavolo</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Salame piccante, Emmental, Funghi piccanti, Salsiccia</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Smash burger</div><div class="dots"></div><div class="price">€ 10,00</div></div><div class="item-desc">Doppio hamburger di manzo pressato, Lattuga, Pomodoro, Cheddar, Bacon croccante, Cipolla caramellata, Contorno di patatine fritte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Hot dog</div><div class="dots"></div><div class="price">€ 3,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Patasiccia</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc">Patatine fritte, Salsiccia</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Patatoso</div><div class="dots"></div><div class="price">€ 2,50</div></div><div class="item-desc">Patatine fritte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">America crunch</div><div class="dots"></div><div class="price">€ 10,00</div></div><div class="item-desc">Pollo con panatura di cornflakes, Lattuga, Pomodoro, Cheddar, Bacon croccante, Cipolla caramellata, Contorno di patatine fritte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Pistacchione</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Hamburger di manzo, Funghi aromatizzati al pistacchio, Stracciatella</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Speckiato</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Speck, noci, miele</div></div>
+      <p class="note">
+        Salse disponibili: Ketchup, Maionese, Salsa rosa, Salsa
+</p>
+
+    </section>
+
+    <section id="piadine">
+      <h2>Piadine</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Piadina classica</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Mozzarella fiordilatte, Pomodoro, Lattuga, Prosciutto cotto</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Piadina al crudo</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Prosciutto crudo, Rucola, Pomodoro, Scaglie di grana</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Piadina classica</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Lattuga, Petto di pollo panato (fritto o alla piastra), Pomodoro, Cheddar, Cipolla caramellata, Contorno di patatine fritte</div></div>
+      <p class="note">
+  Ogni panino che si può vedere all'interno del menù può essere fatto a piadina! (aggiunzione €1 rispetto al prezzo del panino)
+</p>
+
+ </section>
+
+    <section id="bruschettoni">
+      <h2>Bruschettoni</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bruschettone mediterraneo</div><div class="dots"></div><div class="price">€ 10,00 a persona</div></div><div class="item-desc">Pomodoro di bruschetta, Mozzarella fiordilatte, Olio, Origano</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Bruschettone porchetta </div><div class="dots"></div><div class="price">€ 10,00 a persona</div></div><div class="item-desc">Porchetta, Emmental, Cipolla caramellata</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bruschettone pistacchioso</div><div class="dots"></div><div class="price">€ 10,00 a persona</div></div><div class="item-desc">Mortadella, Stracciatella, Pesto di pistacchio, Granella di pistacchio</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Bruschettone pollo</div><div class="dots"></div><div class="price">€ 10,00 a persona</div></div><div class="item-desc">Straccetti di pollo panato fritto, Bacon croccante, Cheddar, Mozzarella fiordilatte, Salsa barbeque</div></div>
+
+    </section>
+
+    </section>
+
+    <section id="taglieri">
+      <h2>Taglieri</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Tagliere di salumi e formaggi</div><div class="dots"></div><div class="price">€ 10,00 a persona</div></div><div class="item-desc">Salumi e formaggi della casa</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Tagliere SWING</div><div class="dots"></div><div class="price">€ 15,00 a persona</div></div><div class="item-desc">Salsiccia, Pollo alla piastra, Alette di pollo, Mini hamburger, Porchetta, Nuggets di pollo, Spiedini di carne di vitello, Contorno di patatine</div></div>
+    </section>
+
+        <section id="insalate">
+      <h2>Insalate</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Insalata caprese</div><div class="dots"></div><div class="price">€ 4,50</div></div><div class="item-desc">Mozzarella ciliegino, Pomodoro, lattuga</div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Insalata mista</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Lattuga, Pomodoro, Carote, Mais, Tonno</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Insalata gallo</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Pollo panato alla piastra, Lattuga, Pomodoro, Mais</div></div>
+    </section>
+
+
+        <section id="piadine">
+      <h2>Dolci</h2>
+      <div class="section-rule"></div>
+      <div class="item"><div class="item-top"><div class="item-name">Crepes</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc"></div></div>
+            <div class="item"><div class="item-top"><div class="item-name">Tortino al cioccolato</div><div class="dots"></div><div class="price">€ 4,00</div></div><div class="item-desc"></div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Parfait di mandorle</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc"></div></div>
+          <div class="item"><div class="item-top"><div class="item-name">Tiramisù</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc"></div></div>
+
+    </section>
+
+    <footer>NEW SWING PUB • MENÙ DIGITALE<br />Per intollaranze e allergie chiedere sempre ai camerieri di sala</footer>
+  </main>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    const links = navMenu.querySelectorAll('a');
+    const sections = document.querySelectorAll('main section');
+    const menuHint = document.querySelector('.menu-hint');
+
+    function closeMenu() {
+      navMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      if (menuHint) menuHint.style.display = 'none';
+    });
+
+    /*
+      Usa getElementById invece di document.querySelector:
+      così il click su Birre cerca direttamente l'elemento id="birre"
+      e non genera errori per selector non validi.
+    */
+    links.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const targetId = link.getAttribute('href').replace('#', '');
+        const target = document.getElementById(targetId);
+
+        closeMenu();
+
+        if (!target) {
+          console.warn(`Sezione non trovata: ${targetId}`);
+          return;
+        }
+
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.classList.remove('focused');
+        setTimeout(() => target.classList.add('focused'), 450);
+        setTimeout(() => target.classList.remove('focused'), 1550);
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) closeMenu();
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    sections.forEach((section) => observer.observe(section));
+  </script>
 </body>
 </html>
