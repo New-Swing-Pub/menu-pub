@@ -156,7 +156,7 @@
     }
   </style>
 </head>
-<body>
+<body traslate="no" class "notranslate">
   <header>
     <div class="brand">
       <img
@@ -196,7 +196,7 @@
     <a href="#dolci">Dolci</a>
   </nav>
 
-  <main class="container">
+  <main class="container notraslate" traslate="no">
     <div class="hero">
       <img
   class="hero-logo"
@@ -512,6 +512,11 @@
   </main>
 
   <script>
+    document.documentElement.setAttribute('translate', 'no');
+document.documentElement.classList.add('notranslate');
+
+document.body.setAttribute('translate', 'no');
+document.body.classList.add('notranslate');
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('navMenu');
     const links = navMenu.querySelectorAll('a');
