@@ -19,7 +19,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: auto; }
 
     body {
       margin: 0;
@@ -456,7 +456,7 @@
       <div class="section-rule"></div>
       <div class="item"><div class="item-top"><div class="item-name">Piadina classica</div><div class="dots"></div><div class="price">€ 5,00</div></div><div class="item-desc">Mozzarella fiordilatte, Pomodoro, Lattuga, Prosciutto cotto</div></div>
             <div class="item"><div class="item-top"><div class="item-name">Piadina al crudo</div><div class="dots"></div><div class="price">€ 6,00</div></div><div class="item-desc">Prosciutto crudo, Rucola, Pomodoro, Scaglie di grana</div></div>
-      <div class="item"><div class="item-top"><div class="item-name">Piadina classica</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Lattuga, Petto di pollo panato (fritto o alla piastra), Pomodoro, Cheddar, Cipolla caramellata, Contorno di patatine fritte</div></div>
+      <div class="item"><div class="item-top"><div class="item-name">Wrap</div><div class="dots"></div><div class="price">€ 8,00</div></div><div class="item-desc">Lattuga, Petto di pollo panato (fritto o alla piastra), Pomodoro, Cheddar, Cipolla caramellata, Contorno di patatine fritte</div></div>
       <p class="note">
   Ogni panino che si può vedere all'interno del menù può essere fatto a piadina! (aggiunzione €1 rispetto al prezzo del panino)
 </p>
@@ -514,7 +514,6 @@
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('navMenu');
     const links = navMenu.querySelectorAll('a');
-    const sections = document.querySelectorAll('main section');
     const menuHint = document.querySelector('.menu-hint');
 
     function closeMenu() {
@@ -549,7 +548,7 @@
           return;
         }
 
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: 'auto', block: 'start' });
         target.classList.remove('focused');
         setTimeout(() => target.classList.add('focused'), 450);
         setTimeout(() => target.classList.remove('focused'), 1550);
@@ -560,16 +559,7 @@
       if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) closeMenu();
     });
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
 
-    sections.forEach((section) => observer.observe(section));
   </script>
 </body>
 </html>
